@@ -1,0 +1,38 @@
+<div class="container text-center">
+  <h1>Blog</h1>
+
+  <div class="row">
+
+    <div class="col-4">
+
+      <h3>Add article</h3>
+      <form enctype="multipart/form-data" name="media">
+        <div class="row">
+          <textarea class="form-control" [(ngModel)]="textarea" name="text_input"></textarea>
+        </div>
+        <div class="row">
+          <input type="file" class="form-control" #filebut/>
+        </div>
+        <div class="row justify-content-center">
+          <div class="col-4">
+            <button class="btn btn-primary" #postbut>Add</button>
+          </div>
+          <div class="col-4">
+          <button class="btn btn-warning" #resetbut>Reset</button></div>
+        </div>
+      </form>
+    </div>
+    <div class="col-8">
+      <div class="row justify-content-center" #pagesrow>
+        
+      </div>
+      <div *ngFor="let article1 of articles; let i = index" class="container">
+        <p>{{article1.date}}</p>
+        <p>{{article1.username}}</p>
+        <textarea readonly [textContent]="messageToText(article1.message)" ></textarea>
+        <div></div>
+      </div>
+    </div>
+
+  </div>
+</div>

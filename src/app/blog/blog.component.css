@@ -1,0 +1,17 @@
+.page{
+
+    color:darkcyan !important;
+
+}
+
+.page:hover{
+
+    color:darkblue;
+    cursor:pointer;
+
+}
+
+.page:active{
+
+    color:darkblue;
+}

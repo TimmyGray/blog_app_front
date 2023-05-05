@@ -1,0 +1,46 @@
+<div class="container text-center">
+
+  <h1>Login</h1>
+  <div class="row justify-content-center">
+
+    <form class="col-12 col-lg-6">
+
+      <div class="row mb-3">
+        <input class="form-control"
+               type="text"
+               placeholder="login/email"
+               [(ngModel)]="user.login"
+               name="log_user_login_input"
+               #log_user_login_input
+               required maxlength="20" />
+      </div>
+
+      <div class="row mb-5">
+        <input class="form-control"
+               type="password"
+               placeholder="password"
+               [(ngModel)]="user.password"
+               name="log_user_password_input"
+               #log_user_password_input
+               required maxlength="20" />
+      </div>
+
+      <div class="row">
+
+        <div class="col-6">
+          <button class="btn btn-primary" #logbut>Login</button>
+        </div>
+
+        <div class="col-6">
+          <button class="btn btn-warning" #resetbut>Reset</button>
+        </div>
+
+      </div>
+
+    </form>
+
+
+  </div>
+
+
+</div>

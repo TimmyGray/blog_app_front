@@ -1,0 +1,27 @@
+<header class="bg-blue">
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+
+      <button class="navbar-toggler"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#navbarNavAltMarkup"
+              aria-controls="navbarNavAltMarkup"
+              aria-expanded="false"
+              aria-label="Navigation switch">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+
+        <div class="navbar-nav">
+          <a class="nav-link text-yellow" routerLink="blog" routerLinkActive="active">Blog</a>
+          <a class="nav-link text-yellow" routerLink="login"routerLinkActive="active">Login</a>
+          <a class="nav-link text-yellow" routerLink="register"routerLinkActive="active">Register</a>
+        </div>
+        <button class="btn btn-warning" #logoutbut>Logout</button>
+      </div>
+    </div>
+  </nav>
+</header>
+<router-outlet></router-outlet>
