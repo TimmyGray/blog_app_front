@@ -44,10 +44,10 @@ export class LoginComponent implements AfterViewInit, OnDestroy {
 
     ).subscribe({
 
-      error: ((e: Error) => {
+      error: ((e) => {
 
         console.error(e);
-        alert(`Login failed: ${e.message}`);
+        alert(`Login failed: ${e.error}`);
 
       }),
 

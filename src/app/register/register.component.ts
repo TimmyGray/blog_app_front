@@ -62,10 +62,10 @@ export class RegisterComponent implements AfterViewInit, OnDestroy {
         this.router.navigate(['']);
 
       }),
-      error: ((e: Error) => {
+      error: ((e) => {
 
         console.error(e);
-        alert(`Register failed: ${e.message}`);
+        alert(`Register failed: ${e.error}`);
 
       })
     });

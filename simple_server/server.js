@@ -10,7 +10,7 @@ const server = Express();
 const apppath = __dirname;
 console.log(apppath);
 
-const port = procces.env.Port || procces.argv[2]||3300;
+const port = procces.env.Port || procces.argv[2]||4200;
 server.use(Express.static(apppath));
 
 server.get('/', (req, res) => {

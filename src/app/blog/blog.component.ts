@@ -70,9 +70,9 @@ export class BlogComponent implements OnInit, AfterViewInit {
         this.textarea = '';
         this.fileBut.value = '';
       }),
-      error: ((e: Error) => {
+      error: ((e) => {
 
-        console.error(e);
+        console.error(e.error);
 
       })
     });
@@ -101,10 +101,10 @@ export class BlogComponent implements OnInit, AfterViewInit {
         this.countofpage++;
 
       }),
-      error: ((e: Error) => {
+      error: ((e) => {
 
         console.error(e);
-        alert(e.message);
+        alert(e.error);
 
       })
     });
@@ -122,10 +122,10 @@ export class BlogComponent implements OnInit, AfterViewInit {
         this.countofpage = data.counts;
 
       }),
-      error: ((e: Error) => {
+      error: ((e) => {
 
         console.error(e);
-        alert(e.message);
+        alert(e.error);
 
       })
     });

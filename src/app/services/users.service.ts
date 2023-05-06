@@ -17,7 +17,7 @@ export class UsersService {
   loginUser(user: User): Observable<boolean> {
 
     const httpheaders: HttpHeaders = new HttpHeaders({ "Content-Type": "application/json" });
-    return this.httpclient.post(this.url + '/login', JSON.stringify(user), { headers: httpheaders }).pipe(
+    return this.httpclient.post(this.url + '/login', JSON.stringify(user), { observe: "body", responseType:'json', headers: httpheaders }).pipe(
       
       map((res:any) => {
 
@@ -34,7 +34,7 @@ export class UsersService {
   registerUser(user: User):Observable<boolean> {
 
     const httpheaders: HttpHeaders = new HttpHeaders({ "Content-Type": "application/json" });
-    return this.httpclient.post(this.url + '/register', JSON.stringify(user), { headers: httpheaders }).pipe(
+    return this.httpclient.post(this.url + '/register', JSON.stringify(user), { observe: 'body', responseType:'json', headers: httpheaders }).pipe(
 
       map((res:any) => {
 
