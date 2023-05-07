@@ -14,20 +14,10 @@ export class UsersService {
 
   constructor(private httpclient: HttpClient) { }
 
-  loginUser(user: User): Observable<boolean> {
+  loginUser(user: User): Observable<any> {
 
     const httpheaders: HttpHeaders = new HttpHeaders({ "Content-Type": "application/json" });
-    return this.httpclient.post(this.url + '/login', JSON.stringify(user), { observe: "body", responseType:'json', headers: httpheaders }).pipe(
-      
-      map((res:any) => {
-
-        sessionStorage.setItem('user', user.login);
-        sessionStorage.setItem('token', res.token);
-        return true;
-
-      })
-      
-    );
+    return this.httpclient.post(this.url + '/login', JSON.stringify(user), { observe: "body", responseType: 'json', headers: httpheaders });
 
   }
 

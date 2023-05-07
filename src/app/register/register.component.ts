@@ -18,8 +18,6 @@ export class RegisterComponent implements AfterViewInit, OnDestroy {
   @ViewChild('resetbut')
   private resetbut: ElementRef | undefined;
 
-
-  regClick$: Subscription | undefined;
   resetClick$: Subscription | undefined;
 
   user: User;
@@ -32,44 +30,11 @@ export class RegisterComponent implements AfterViewInit, OnDestroy {
   }
   ngOnDestroy(): void {
 
-    this.regClick$?.unsubscribe();
     this.resetClick$?.unsubscribe();
 
   }
 
   ngAfterViewInit(): void {
-
-    this.regClick$ = fromEvent(this.regBut, 'click').pipe(
-
-      map(() => {
-        if (this.user.password != this.confirmpass) {
-
-          alert('Password and Confirm passport must be the same');
-          return false;
-
-        }
-        else {
-          return true;
-        }
-      }),
-      filter(valid => valid == true),
-      exhaustMap(() => this.userserv.registerUser(this.user))
-
-    ).subscribe({
-      next: (() => {
-
-        console.log('Register successful');
-        this.router.navigate(['']);
-
-      }),
-      error: ((e) => {
-
-        console.error(e);
-        alert(`Register failed: ${e.error}`);
-
-      })
-    });
-
 
     this.resetClick$ = fromEvent(this.resetBut, 'click').subscribe({
       next: (() => {
@@ -97,6 +62,29 @@ export class RegisterComponent implements AfterViewInit, OnDestroy {
   public get resetBut(): HTMLButtonElement {
 
     return this.resetbut?.nativeElement;
+
+  }
+
+  registerClick() {
+
+    if (this.user.password != this.confirmpass) {
+      alert('Password and Confirm password must be the same');
+      return;
+    }
+    this.userserv.registerUser(this.user).subscribe({
+      next: (() => {
+
+        console.log('Register successful');
+        this.router.navigate(['']);
+
+      }),
+      error: ((e) => {
+
+        console.error(e);
+        alert(`Register failed: ${e.error}`);
+
+      })
+    });
 
   }
 

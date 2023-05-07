@@ -34,8 +34,8 @@ export class BlogComponent implements OnInit, AfterViewInit {
   private curtoken: string|null;
   articles: Article[];
   article: Article;
-  page: number = 1;
-  countofpage: number = 1;
+  page: number = 0;
+  countofpage: number = 0;
   textarea: string = '';
   file: any;
 
@@ -97,7 +97,7 @@ export class BlogComponent implements OnInit, AfterViewInit {
 
       next: ((data) => {
 
-        this.articles.push(new Article(data._id, data.data, data.message, data.username));
+        this.articles.push(new Article(data._id, data.date, data.message, data.username));
         this.countofpage++;
 
       }),
@@ -119,7 +119,11 @@ export class BlogComponent implements OnInit, AfterViewInit {
       next: (data => {
 
         this.articles = data.articles;
-        this.countofpage = data.counts;
+        if (this.countofpage!=data.counts) {
+          this.countofpage = data.counts;
+          this.addPage();
+        }
+
 
       }),
       error: ((e) => {
@@ -164,13 +168,14 @@ export class BlogComponent implements OnInit, AfterViewInit {
 
   private addPage() {
 
+    this.pagesRow.innerHTML = '';
     for (var i = 0; i < this.countofpage; i++) {
-
+      
       let page = document.createElement('a');
-      page.textContent = `${i + 1}`;
-      page.classList.add('page');
+      page.textContent = `${i+1}`;
+      page.classList.add('page','col-2');
       page.addEventListener('click', () => {
-        this.getArticles(i);
+        this.getArticles(parseInt(page.textContent as string));
       })
       this.pagesRow.appendChild(page);
 

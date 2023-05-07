@@ -18,7 +18,6 @@ export class LoginComponent implements AfterViewInit, OnDestroy {
   @ViewChild('resetbut', { static: false })
   private resetbut: ElementRef | undefined
 
-  logClick$: Subscription | undefined;
   resetClick$: Subscription | undefined;
 
   user: User;
@@ -31,34 +30,11 @@ export class LoginComponent implements AfterViewInit, OnDestroy {
   }
   ngOnDestroy(): void {
 
-    this.logClick$?.unsubscribe();
     this.resetClick$?.unsubscribe();
 
   }
 
   ngAfterViewInit(): void {
-
-    this.logClick$ = fromEvent(this.logBut, 'click').pipe(
-
-      exhaustMap(() => this.userserv.loginUser(this.user))
-
-    ).subscribe({
-
-      error: ((e) => {
-
-        console.error(e);
-        alert(`Login failed: ${e.error}`);
-
-      }),
-
-      next: (() => {
-
-        console.log('Login successful');
-        this.router.navigate(['/blog']);
-
-      })
-    });
-
 
     this.resetClick$ = fromEvent(this.resetBut, 'click').subscribe({
       next: (() => {
@@ -67,7 +43,6 @@ export class LoginComponent implements AfterViewInit, OnDestroy {
 
       })
     });
-
 
   }
 
@@ -86,6 +61,30 @@ export class LoginComponent implements AfterViewInit, OnDestroy {
   public get resetBut(): HTMLButtonElement {
 
     return this.resetbut?.nativeElement;
+
+  }
+
+  loginClick() {
+
+    this.userserv.loginUser(this.user).subscribe({
+
+      error: ((e) => {
+
+        console.error(e);
+        alert(`Login failed: ${e.error}`);
+
+      }),
+
+      next: ((data) => {
+
+        sessionStorage.setItem('user', this.user.login);
+        sessionStorage.setItem('token', data.token);
+
+        console.log('Login successful');
+        this.router.navigate(['/blog']);
+
+      })
+    });
 
   }
 

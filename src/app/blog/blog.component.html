@@ -7,13 +7,13 @@
 
       <h3>Add article</h3>
       <form enctype="multipart/form-data" name="media">
-        <div class="row">
+        <div class="row mb-2">
           <textarea class="form-control" [(ngModel)]="textarea" name="text_input"></textarea>
         </div>
-        <div class="row">
+        <div class="row mb-3">
           <input type="file" class="form-control" #filebut/>
         </div>
-        <div class="row justify-content-center">
+        <div class="row text-center">
           <div class="col-4">
             <button class="btn btn-primary" #postbut>Add</button>
           </div>
@@ -26,10 +26,10 @@
       <div class="row justify-content-center" #pagesrow>
         
       </div>
-      <div *ngFor="let article1 of articles; let i = index" class="container">
-        <p>{{article1.date}}</p>
-        <p>{{article1.username}}</p>
-        <textarea readonly [textContent]="messageToText(article1.message)" ></textarea>
+      <div *ngFor="let article1 of articles; let i = index" class="container article-bc mb-2">
+        <div>{{article1.date|date}}</div>
+        <div>{{article1.username}}</div>
+        <textarea readonly [textContent]="messageToText(article1.message)" class="form-control col-12"></textarea>
         <div></div>
       </div>
     </div>
