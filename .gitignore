@@ -49,3 +49,5 @@ obj
 
 /dist
 /src/environments/environment.prod.ts
+
+/media

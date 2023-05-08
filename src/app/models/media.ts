@@ -4,6 +4,7 @@ export class MediaMessage implements Imessage {
 
   constructor(
     public _id: string,
-    public media: Blob) { }
+    public msgvalue: Blob,
+    public type:string) { }
 
 }

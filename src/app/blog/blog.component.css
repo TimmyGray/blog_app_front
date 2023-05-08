@@ -17,8 +17,14 @@
 }
 
 
-.article-bc{
-
-    background-color:antiquewhite!important;
-
+.article-bc {
+  background-color: #dbe4fe !important;
+  border-radius: 25px;
+  border-color: #dbe4fe;
+  border-width: 5px !important;
+  border-block-start-style: solid;
+  border-bottom-style: groove;
+  padding-bottom: 2rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }

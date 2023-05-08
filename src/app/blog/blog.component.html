@@ -6,16 +6,20 @@
     <div class="col-4">
 
       <h3>Add article</h3>
-      <form enctype="multipart/form-data" name="media">
+      <form enctype="multipart/form-data" id="blogform" >
         <div class="row mb-2">
-          <textarea class="form-control" [(ngModel)]="textarea" name="text_input"></textarea>
+          <textarea rows="10"
+                    class="form-control"
+                    [hidden]="file!=undefined"
+                    [(ngModel)]="textarea"
+                    name="text_input"></textarea>
         </div>
         <div class="row mb-3">
-          <input type="file" class="form-control" #filebut/>
+          <input type="file" [hidden]="textarea!=''" class="form-control" name="media" #filebut/>
         </div>
         <div class="row text-center">
           <div class="col-4">
-            <button class="btn btn-primary" #postbut>Add</button>
+            <button type="submit" class="btn btn-primary" #postbut>Add</button>
           </div>
           <div class="col-4">
           <button class="btn btn-warning" #resetbut>Reset</button></div>
@@ -26,10 +30,57 @@
       <div class="row justify-content-center" #pagesrow>
         
       </div>
-      <div *ngFor="let article1 of articles; let i = index" class="container article-bc mb-2">
-        <div>{{article1.date|date}}</div>
-        <div>{{article1.username}}</div>
-        <textarea readonly [textContent]="messageToText(article1.message)" class="form-control col-12"></textarea>
+      <div *ngFor="let article1 of articles; let i = index" class="container article-bc mb-4">
+        <div class="row">
+          <div>{{article1.date|date}}</div>
+          <div>{{article1.username}}</div>
+
+          <audio *ngIf="article1.message.type=='audio'" controls>
+            <source [src]="mediaUrls.get(article1._id)" />
+          </audio>
+
+          <img *ngIf="article1.message.type=='image'"
+               [src]="mediaUrls.get(article1._id)"
+               class="img-thumbnail rouded mx-auto d-block"/>
+
+          <video *ngIf="article1.message.type=='video'" controls>
+            <source [src]="mediaUrls.get(article1._id)"/>
+          </video>
+          
+          <textarea [readonly]="!isEdit[i]"
+                    *ngIf="article1.message.type=='text'"
+                    [(ngModel)]="article1.message.msgvalue"
+                    class="form-control col-12 pb-3"></textarea>
+          <input *ngIf="article1.message.type!='text'"
+                 [hidden]="article1.username!=curuser"
+                 type="file"
+                 name="editmedia"
+                 [disabled]="editarticle!._id!=article1._id"
+                 class="form-control mb-2" />
+
+          <div class="row justify-content-center">
+            <div class="col-4">
+              <button class="btn btn-success" 
+                      [hidden]="article1.username!=curuser"
+                      (click)="updateClick(article1,i)"
+                      #updatebut>Update</button>
+            </div>
+
+            <div class="col-4">
+              <button class="btn btn-warning"
+                      [hidden]="article1.username!=curuser"
+                      (click)="cancelClick(article1,i)"
+                      #cancelbut>Cancel</button>
+            </div>
+
+            <div class="col-4">
+              <button class="btn btn-danger"
+                      [hidden]="article1.username!=curuser"
+                      (click)="deleteClick(article1,i)"
+                      #deletebut>Delete</button>
+            </div>
+          </div>
+        </div>
         <div></div>
       </div>
     </div>
