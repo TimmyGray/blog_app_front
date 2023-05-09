@@ -90,41 +90,6 @@ export class BlogComponent implements OnInit, AfterViewInit, OnDestroy {
       })
     });
 
-    this.postClick$ = fromEvent(this.postBut, 'click').pipe(
-      map(() => {
-        if (this.textarea != '') {
-          
-          this.article.message = new TextMessage('', this.textarea,'text');
-          return true;
-        }
-        else {
-          if (this.file) {
-            this.article.message = new MediaMessage('', this.file,'media');
-            return true;
-          }
-        }
-        return false;
-      }),
-      filter(valid=>valid==true),
-      exhaustMap(() => this.articleserv.postArticle(this.article))
-    ).subscribe({
-
-      next: ((data) => {
-
-        this.articles.push(new Article(data._id, data.date, data.message, data.username));
-        if (this.countofpage!=data.counts) {
-          this.addPage();
-
-        }
-
-      }),
-      error: ((e) => {
-
-        console.error(e);
-        alert(e.error);
-
-      })
-    });
 
     this.fileClick$ = fromEvent(this.fileBut, 'change').pipe(
 
@@ -193,47 +158,19 @@ export class BlogComponent implements OnInit, AfterViewInit, OnDestroy {
 
         })
       }),
-      exhaustMap(() => from(this.articles).pipe(
-        filter(value => value.message._id != ''),
+      exhaustMap(() => from(this.articles)),
+      filter(art => art.message._id!=''),
+      concatMap(art => this.articleserv.getMedia(art.message._id).pipe(
         map(value => {
 
-          this.ids.push(value._id)
-          console.log(value._id);
-          return value;
-
+          this.mediaUrls.set(art._id, window.URL.createObjectURL(value));
+          
         })
-
       )),
-
-      concatMap(value => this.articleserv.getMedia(value.message._id).pipe(
-        map(value => this.medias.push(value))
-      )),
-      exhaustMap(() => of(this.medias))
 
     ).subscribe({
       next: (data => {
 
-        for (var i = 0; i < this.medias.length; i++) {
-
-          let url = window.URL.createObjectURL(data[i]);
-          this.urls.push(url);
-
-
-          //let reader = new FileReader();
-          //reader.readAsDataURL(data[i]);
-          //reader.onload = () => {
-          //  let url = reader.result as string;
-          //  this.urls.push(url);
-          //}
-
-          //reader.onerror = (e) => {
-          //  console.error(e);
-          //  alert(e);
-          //}
-
-        }
-
-        this.concatIdWithUrl();
       }),
       error: ((e) => {
 
@@ -296,11 +233,51 @@ export class BlogComponent implements OnInit, AfterViewInit, OnDestroy {
 
   }
 
-  //messageToText(message: Imessage): string {
+  postClick() {
 
-  //  return (message as TextMessage).text;
+    if (this.textarea!='') {
 
-  //}
+      this.article.message = new TextMessage('', this.textarea, 'text');
+
+    }
+    else {
+
+      if (this.file) {
+        this.article.message = new MediaMessage('', this.file, 'media');
+
+      } else {
+        alert('Write text or select file');
+        return ;
+      }
+
+    }
+
+    this.articleserv.postArticle(this.article).subscribe({
+
+      next: ((data) => {
+
+        this.articles.push(new Article(data._id, data.date, data.message, data.username));
+        if (this.countofpage != data.counts) {
+          this.addPage();
+
+        }
+        if (data.message.type != 'text') {
+
+          this.mediaUrls.set(data._id, window.URL.createObjectURL(this.file));
+
+        }
+
+
+      }),
+      error: ((e) => {
+
+        console.error(e);
+        alert(e.error);
+
+      })
+    });
+
+  }
 
   updateClick(editarticle: Article, index: number) {
 
@@ -384,13 +361,18 @@ export class BlogComponent implements OnInit, AfterViewInit, OnDestroy {
       next: (() => {
 
         this.articles.splice(ind, 1);
+        if (this.articles[ind].message.type != 'text') {
+
+          this.mediaUrls.delete(this.articles[ind]._id);
+
+        }
         alert('Succesful delete');
         console.log('delete');
       }),
       error: ((e) => {
 
         console.log(e);
-        alert(e.message);
+        alert(`${e.message} BUT STILL DELETE!=)`);
 
       })
     })
@@ -398,49 +380,10 @@ export class BlogComponent implements OnInit, AfterViewInit, OnDestroy {
 
   }
 
-  private concatIdWithUrl(){
+  //displayMedia(article: Article) {
 
-    for (let i = 0; i < this.ids.length;i++) {
+  //  return this.mediaUrls.get(article._id);
 
-      this.mediaUrls.set(this.ids[i], this.urls[i]);
-
-    }
-
-  }
-
-  displayMedia(article: Article) {
-
-    return this.mediaUrls.get(article._id);
-    //this.articleserv.getMedia(message._id).subscribe({
-    //  next: ((data) => {
-
-    //    let filereader = new FileReader();
-    //    filereader.readAsDataURL(data);
-
-    //    filereader.onload = (() => {
-
-    //      return filereader.result as string;
-
-    //    });
-
-    //    filereader.onerror = (e) => {
-
-    //      console.error(e);
-    //      alert(e);
-
-    //    }
-
-    //  }),
-    //  error: (e => {
-
-    //    console.error(e);
-    //    alert(e.message);
-
-    //  })
-
-    //});
-
-
-  }
+  //}
 
 }

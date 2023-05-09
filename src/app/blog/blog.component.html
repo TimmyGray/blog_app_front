@@ -19,7 +19,7 @@
         </div>
         <div class="row text-center">
           <div class="col-4">
-            <button type="submit" class="btn btn-primary" #postbut>Add</button>
+            <button type="submit" class="btn btn-primary" (click)="postClick()" #postbut>Add</button>
           </div>
           <div class="col-4">
           <button class="btn btn-warning" #resetbut>Reset</button></div>
@@ -32,6 +32,7 @@
       </div>
       <div *ngFor="let article1 of articles; let i = index" class="container article-bc mb-4">
         <div class="row">
+          <div>{{i+1}}</div>
           <div>{{article1.date|date}}</div>
           <div>{{article1.username}}</div>
 

@@ -93,7 +93,7 @@ export class ArticleService {
       'Authorization': `${sessionStorage.getItem('token')}`
     });
 
-    return this.httpclient.delete(this.url + `/deletearticle/${id}`);
+    return this.httpclient.delete(this.url + `/deletearticle/${id}`, { observe: 'body', headers: httpheaders });
 
   }
 
