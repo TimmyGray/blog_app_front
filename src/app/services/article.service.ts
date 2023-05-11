@@ -56,7 +56,6 @@ export class ArticleService {
   getMedia(id: string): Observable<Blob> {
 
     const httpheaders: HttpHeaders = new HttpHeaders({
-      //'Content-Type': `image/jpeg`,
       'Authorization': `${sessionStorage.getItem('token')}`
     });
 
@@ -67,7 +66,6 @@ export class ArticleService {
   postArticle(article: Article): Observable<any> {
 
     const httpheaders: HttpHeaders = new HttpHeaders({
-     // 'Content-Type': `image/jpeg`,
       'Authorization': `${sessionStorage.getItem('token')}`
     });
 

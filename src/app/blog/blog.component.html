@@ -4,7 +4,6 @@
   <div class="row">
 
     <div class="col-4">
-
       <h3>Add article</h3>
       <form enctype="multipart/form-data" id="blogform" >
         <div class="row mb-2">
@@ -36,7 +35,7 @@
           <div>{{article1.date|date}}</div>
           <div>{{article1.username}}</div>
 
-          <audio *ngIf="article1.message.type=='audio'" controls>
+          <audio *ngIf="article1.message.type=='audio'" [src]="mediaUrls.get(article1._id)" controls>
             <source [src]="mediaUrls.get(article1._id)" />
           </audio>
 
@@ -44,7 +43,7 @@
                [src]="mediaUrls.get(article1._id)"
                class="img-thumbnail rouded mx-auto d-block"/>
 
-          <video *ngIf="article1.message.type=='video'" controls>
+          <video *ngIf="article1.message.type=='video'" [src]="mediaUrls.get(article1._id)" controls>
             <source [src]="mediaUrls.get(article1._id)"/>
           </video>
           

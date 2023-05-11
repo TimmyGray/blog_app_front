@@ -45,7 +45,6 @@ export class BlogComponent implements OnInit, AfterViewInit, OnDestroy {
   mediaUrls: Map<string, string> = new Map();
   ids: string[] = new Array();
   urls: string[] = new Array();
-  medias: Blob[] = new Array();
 
   constructor(
     private router: Router,
@@ -372,18 +371,12 @@ export class BlogComponent implements OnInit, AfterViewInit, OnDestroy {
       error: ((e) => {
 
         console.log(e);
-        alert(`${e.message} BUT STILL DELETE!=)`);
+        alert(`${e.message} BUT DELETE!=)`);
 
       })
     })
 
 
   }
-
-  //displayMedia(article: Article) {
-
-  //  return this.mediaUrls.get(article._id);
-
-  //}
 
 }
