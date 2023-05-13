@@ -1,5 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
+import { edit } from '@cloudinary/url-gen/actions/animated';
 import { from, fromEvent, of, Subscription } from 'rxjs';
 import { map, filter, switchMap, exhaustMap, concatMap } from 'rxjs/operators'
 import { Article } from '../models/article';
@@ -35,7 +36,8 @@ export class BlogComponent implements OnInit, AfterViewInit, OnDestroy {
   curtoken: string|null;
   articles: Article[];
   article: Article;
-  editarticle: Article | undefined;
+  editarticle: Article;
+  temptext: any;
   page: number = 0;
   countofpage: number = 0;
   textarea: string = '';
@@ -61,8 +63,8 @@ export class BlogComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.articles = new Array();
     this.article = this.initArticle();
+    this.editarticle = this.initArticle();
     this.isEdit = new Array();
-    
 
     
   }
@@ -257,15 +259,17 @@ export class BlogComponent implements OnInit, AfterViewInit, OnDestroy {
 
         this.articles.push(new Article(data._id, data.date, data.message, data.username));
         if (this.countofpage != data.counts) {
+          this.countofpage = data.counts;
           this.addPage();
 
         }
         if (data.message.type != 'text') {
 
           this.mediaUrls.set(data._id, window.URL.createObjectURL(this.file));
+          this.file = undefined;
 
         }
-
+        alert('Successfull create');
 
       }),
       error: ((e) => {
@@ -280,73 +284,86 @@ export class BlogComponent implements OnInit, AfterViewInit, OnDestroy {
 
   updateClick(editarticle: Article, index: number) {
 
-    if (this.editarticle != undefined) {
+    if (this.editarticle?._id == '') {
 
-      if (this.editarticle?._id == '') {
+      this.editarticle = Object.assign({}, editarticle);
 
-        this.editarticle = Object.assign({}, editarticle);
-        this.isEdit[index] = true;
-        this.curindex = index;
+      this.temptext = this.articles[index].message.msgvalue;
+      this.isEdit[index] = true;
+      this.curindex = index;
+
+    }
+    else {
+
+      if (this.editarticle._id == editarticle._id) {
+
+        if (this.validatorserv.messageValidate(this.editarticle.message)) {
+          this.articleserv.putArticle(this.editarticle).subscribe({
+            next: ((data: Article) => {
+
+              let index: number = this.articles.findIndex(a => a._id == data._id);
+              this.articles.splice(index, 1, data);
+
+              if (data.message.type != 'text') {
+
+                this.mediaUrls.set(data._id, window.URL.createObjectURL(this.file));
+                this.file = undefined;
+              }
+              this.isEdit[index] = false;
+              this.editarticle = this.initArticle();
+              this.curindex = -1;
+
+              alert('Successful update');
+
+            }),
+            error: ((e) => {
+
+              console.error(e);
+              alert(e.message);
+
+            })
+          });
+        }
+        else {
+
+          alert('Incorrect value');
+
+        }
+
 
       }
       else {
 
-        if (this.editarticle._id == editarticle._id) {
+        this.isEdit[this.curindex] = false;
+        this.isEdit[index] = true;
 
-          if (this.validatorserv.messageValidate(editarticle.message)) {
-            this.articleserv.putArticle(editarticle).subscribe({
-              next: ((data) => {
-
-                let index: number = this.articles.findIndex(a => a._id == editarticle._id);
-                this.articles.splice(index, 1, editarticle);
-                this.isEdit[index] = false;
-                this.editarticle = this.initArticle();
-                this.curindex = -1;
-
-              }),
-              error: ((e) => {
-
-                console.error(e);
-                alert(e.message);
-
-              })
-            });
-          }
-          else {
-
-            alert('Incorrect value');
-
-          }
-
-
-        }
-        else {
-
-          this.isEdit[this.curindex] = false;
-          this.isEdit[index] = true;
-
-          this.editarticle = Object.assign({}, editarticle);
-
-        }
-
+        this.editarticle = Object.assign({}, editarticle);
 
       }
 
     }
     
-    
   }
 
-  cancelClick(editartcle: Article, index: number) {
+  cancelClick(editarticle: Article, index: number, event: Event) {
 
     if (this.editarticle != undefined) {
 
-      if (this.editarticle?._id == editartcle._id) {
-
-        this.isEdit[index] = false;
+      if (this.editarticle?._id == editarticle._id) {
+        //console.log(this.editarticle.message.msgvalue);
+        //console.log(editarticle.message.msgvalue);
+        //console.log(this.temptext);
+        //this.editarticle.message.msgvalue = this.temparticle.message.msgvalue;
+        //editarticle.message.msgvalue = this.temparticle.message.msgvalue;
+        this.articles[index].message.msgvalue = this.temptext;
         this.editarticle = this.initArticle();
+        this.isEdit[index] = false;
         this.curindex = -1;
+        console.log(event);
+        if (this.temptext=="") {
+          
 
+        } 
       }
 
     }
@@ -355,27 +372,56 @@ export class BlogComponent implements OnInit, AfterViewInit, OnDestroy {
 
   deleteClick(editarticle: Article, index: number) {
 
-    let ind: number = this.articles.findIndex(a => a._id == editarticle._id);
     this.articleserv.deleteArticle(editarticle._id).subscribe({
       next: (() => {
 
-        this.articles.splice(ind, 1);
-        if (this.articles[ind].message.type != 'text') {
+        if (this.articles[index].message.type != 'text') {
 
-          this.mediaUrls.delete(this.articles[ind]._id);
+          this.mediaUrls.delete(this.articles[index]._id);
 
         }
+        this.articles.splice(index, 1);
         alert('Succesful delete');
         console.log('delete');
+        this.editarticle = this.initArticle();
+        this.file = undefined;
       }),
       error: ((e) => {
 
         console.log(e);
-        alert(`${e.message} BUT DELETE!=)`);
+        alert(`${e.message}`);
 
       })
     })
 
+  }
+
+  editArticleSelect(event: Event) {
+    console.log('edit event');
+    const selector = event.target as HTMLInputElement;
+
+    if (selector.files != null &&
+      (selector.files[0]!.type == `image/png` ||
+      selector.files[0]!.type == `image/jpeg` ||
+      selector.files[0]!.type == `image/jpg` ||
+      selector.files[0]!.type == `video/mp4` ||
+      selector.files[0]!.type == 'video/mpeg' ||
+      selector.files[0]!.type == 'video/x-msvideo' ||
+      selector.files[0]!.type == 'audio/mpeg' ||
+      selector.files[0]!.type == 'audio/wav' ||
+      selector.files[0]!.type == 'audio/aac' ||
+      selector.files[0]!.type == 'video/webm')) {
+
+      this.file = selector.files[0];
+      this.editarticle.message.msgvalue = this.file;
+      console.log(this.editarticle);
+    }
+    else {
+      console.error('Incorrect type');
+      alert("Incoorect type");
+      selector.value = '';
+      return;
+    }
 
   }
 

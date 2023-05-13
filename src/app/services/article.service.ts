@@ -16,6 +16,7 @@ export class ArticleService {
   private makeArticleForm(article: Article): FormData {
 
     let form: FormData = new FormData();
+    form.append('_id', article._id);
     form.append('date', '');
     form.append('username', article.username);
     let message;
@@ -23,7 +24,7 @@ export class ArticleService {
 
       form.append('media', article.message.msgvalue, article.message.msgvalue.name);
       message = {
-        _id: '',
+        _id: article.message._id,
         msgvalue: '',
         type: article.message.type
       };
@@ -76,22 +77,20 @@ export class ArticleService {
   putArticle(article: Article): Observable<any> {
 
     const httpheaders: HttpHeaders = new HttpHeaders({
-      "Content-Type": "multipart/form-data; boundary = AaB03x ",
       'Authorization': `${sessionStorage.getItem('token')}`
     });
 
-    return this.httpclient.post(this.url + '/putarticle', JSON.stringify(article), { headers: httpheaders });
+    return this.httpclient.put(this.url + '/putarticle', this.makeArticleForm(article), { headers: httpheaders });
 
   }
 
   deleteArticle(id: string): Observable<any> {
 
     const httpheaders: HttpHeaders = new HttpHeaders({
-      'Content-Type': 'application/json',
       'Authorization': `${sessionStorage.getItem('token')}`
     });
 
-    return this.httpclient.delete(this.url + `/deletearticle/${id}`, { observe: 'body', headers: httpheaders });
+    return this.httpclient.delete<any>(this.url + `/deletearticle/${id}`, { headers: httpheaders });
 
   }
 

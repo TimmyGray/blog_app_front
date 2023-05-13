@@ -1,6 +1,7 @@
 <div class="container text-center">
   <h1>Blog</h1>
-
+ <!-- <h2><a class="link-info" href="https://global-vaulted-hosta.glitch.me">*Unfortunately, this hosting does not support the transfer of media files larger than 2.5mb,-->
+ <!--   but i have posted this app on another site where you can go by this link</a></h2>-->
   <div class="row">
 
     <div class="col-4">
@@ -54,8 +55,9 @@
           <input *ngIf="article1.message.type!='text'"
                  [hidden]="article1.username!=curuser"
                  type="file"
-                 name="editmedia"
+                 name="media"
                  [disabled]="editarticle!._id!=article1._id"
+                 (change)="editArticleSelect($event)"
                  class="form-control mb-2" />
 
           <div class="row justify-content-center">
@@ -69,7 +71,7 @@
             <div class="col-4">
               <button class="btn btn-warning"
                       [hidden]="article1.username!=curuser"
-                      (click)="cancelClick(article1,i)"
+                      (click)="cancelClick(article1,i,$event)"
                       #cancelbut>Cancel</button>
             </div>
 
